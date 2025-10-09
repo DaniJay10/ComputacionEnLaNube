@@ -1,11 +1,8 @@
-import React from 'react';
-import { Hello } from './Hello.jsx';
-import { Info } from './Info.jsx';
+import AuthForm from "./components/AuthForm";
 
 export const App = () => (
-  <div>
-    <h1>Welcome to Meteor!</h1>
-    <Hello/>
-    <Info/>
-  </div>
+  <main>
+    <h1>Gestion de gastos personales</h1>
+    <AuthForm />
+  </main>
 );
