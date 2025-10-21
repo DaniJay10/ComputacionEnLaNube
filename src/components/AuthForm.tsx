@@ -1,12 +1,24 @@
 import { useState } from "react";
+import { auth } from "../firebase/firebaseClient";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
+    setErrorMsg("");
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err: any) {
+      setErrorMsg(err?.code || err?.message || "Error al iniciar sesión");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -16,6 +28,11 @@ export default function AuthForm() {
           <div className="card shadow-sm">
             <div className="card-body">
               <h2 className="h4 mb-3 text-center">Iniciar sesión</h2>
+
+              {errorMsg && (
+                <div className="alert alert-danger py-2 mb-3">{errorMsg}</div>
+              )}
+
               <form onSubmit={onSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Email</label>
@@ -39,8 +56,12 @@ export default function AuthForm() {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100 mt-3">
-                  Entrar
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100 mt-3"
+                  disabled={loading}
+                >
+                  {loading ? "Procesando..." : "Entrar"}
                 </button>
               </form>
             </div>
